@@ -28,5 +28,5 @@ jobs:
             --autodetect \
             --skip_leading_rows=1 \
             --source_format=CSV \
-            sbu_students.students \
+            flatfiletesting.customers \
             ./students.csv
