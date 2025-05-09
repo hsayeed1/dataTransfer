@@ -1,4 +1,4 @@
-name: Upload Access file to BigQuery
+name: Upload Only New Students to BigQuery
 
 on:
   workflow_dispatch:
@@ -21,12 +21,16 @@ jobs:
         with:
           project_id: testproject-459116
 
-      - name: Upload to BigQuery
+      - name: Load into staging table
         run: |
           bq load \
-            --replace \
             --autodetect \
             --skip_leading_rows=1 \
             --source_format=CSV \
-            flatfiletesting.customer \
+            sbu_students.students_staging \
             ./students.csv
+
+      - name: Merge new records
+        run: |
+          bq query --use_legacy_sql=false '
+          MERGE `testproject-459116.sbu_students.students_
