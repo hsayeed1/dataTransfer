@@ -1,0 +1,32 @@
+name: Upload Access file to BigQuery
+
+on:
+  workflow_dispatch:
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up gcloud CLI
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: testproject-459116
+
+      - name: Upload to BigQuery
+        run: |
+          bq load \
+            --replace \
+            --autodetect \
+            --skip_leading_rows=1 \
+            --source_format=CSV \
+            sbu_students.students \
+            ./students.csv
